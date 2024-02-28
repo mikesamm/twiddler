@@ -70,7 +70,7 @@ scheduleNextTweet();
 const writeTweet = (message) => {
   const visitor = window.visitor;
 
-  if (!visitor){
+  if (!visitor) {
     throw new Error('Set the global visitor property!');
   }
 
