@@ -7,8 +7,10 @@ $(document).ready(() => {
   const $tweetsDiv = $('<div id=tweets>');
   $body.append($tweetsDiv);
 
-  // create previous tweet time tracker
+  // create time variables
   let previousTime; // would equal time listed in the timeStamp div
+  let now = Date.now();
+
 
   // deliver new tweets
   const newTweets = function() {
@@ -25,7 +27,6 @@ $(document).ready(() => {
     if (!previousTime) {
       //   map the whole streams.home
       $tweets = streams.home.map((tweet) => {
-        // if tweet.created_at >= previousTime
         // create a div for each tweet
         const $tweet = $('<div class=tweet></div>');
         // create div after each tweet div for timestamp
@@ -33,17 +34,16 @@ $(document).ready(() => {
         // text to go into tweet div
         const text = `@${tweet.user}: ${tweet.message}`;
         // text (time) to go into time div
-        const time = tweet.created_at;
+        const time = moment();
+        const timeSince = moment().calendar(time); // ex: Today at 2:30 AM
   
         $tweet.text(text);
         $tweet.append($timeStamp);
-        $timeStamp.text(time);
+        $timeStamp.text(`${time} --${timeSince}--`);
   
         // set previousTime to the milliseconds of the tweet's created_at
         previousTime = tweet.created_at.getTime();
-        // // console.log(previousTime);
-        // console.log('previousTime', previousTime);
-        // console.log('tweet timestamp', tweet.created_at.getTime());
+
   
         return $tweet;
       });
@@ -52,7 +52,6 @@ $(document).ready(() => {
       let latestTweets = streams.home.filter((tweet) => tweet.created_at > previousTime);
       //   map filtered array
       $tweets = latestTweets.map((tweet) => {
-        // if tweet.created_at >= previousTime
         // create a div for each tweet
         const $tweet = $('<div class=tweet></div>');
         // create div after each tweet div for timestamp
@@ -60,15 +59,15 @@ $(document).ready(() => {
         // text to go into tweet div
         const text = `@${tweet.user}: ${tweet.message}`;
         // text (time) to go into time div
-        const time = tweet.created_at;
+        const time = moment();
+        const timeSince = moment().calendar(time); // ex: Today at 2:30 AM
   
         $tweet.text(text);
         $tweet.append($timeStamp);
-        $timeStamp.text(time);
+        $timeStamp.text(`${time} or ${timeSince}`);
   
         // set previousTime to the milliseconds of the tweet's created_at
         previousTime = tweet.created_at.getTime();
-        // console.log(previousTime);
   
         return $tweet;
       });
