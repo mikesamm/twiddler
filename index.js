@@ -6,13 +6,38 @@ $(document).ready(() => {
   // add button inside a button div
   const $buttonDiv = $('<div id=new-tweets-button>');
   $body.prepend($buttonDiv);
-  $buttonDiv.append('<button id=new-tweets>New Tweets</button>');
+  $buttonDiv.append('<button id=new-tweets>show latest tweets</button>');
+
+  // add a form to accept a username and tweet
+  // declare form div and form elements
+  const $formDiv = $('<div id="tweet-form-container">');
+  const $form = $('<form id=tweet-form>')
+  const $button = $('<button id=submit-button>tweet</button>')
+  const $formUserDiv = $('<div id=submit-user-div>')
+  const $formMsgDiv = $('<div id=submit-msg-div>')
+  const $formButtonDiv = $('<div id=submit-button-div>')
+  const $formUserLabel = $('<label for=user-text>username:</label>');
+  const $formUserText = $('<input type=text id=user-text>');
+  const $formMsgLabel = $('<label for=msg-text>tweet:</label>');
+  const $formMsgText = $('<input type=text id="msg-text">');
+  //  add a form div to house the form fields
+  $body.prepend($formDiv);
+  $formDiv.append($form);
+  //    two text fields in the form
+  $form.append($formUserDiv);
+  $formUserDiv.append($formUserLabel);
+  $formUserDiv.append($formUserText);
+  $form.append($formMsgDiv);
+  $formMsgDiv.append($formMsgLabel);
+  $formMsgDiv.append($formMsgText);
+  //    one button to submit the tweet
+  $form.append($formButtonDiv);
+  $formButtonDiv.append($button);
+
 
   // create a div for all of the tweets
   const $tweetsDiv = $('<div id=tweets>');
   $body.append($tweetsDiv);
-
-
 
   // create time variables
   let previousTime; // would equal time listed in the timeStamp div
@@ -128,7 +153,20 @@ $(document).ready(() => {
     $tweetsDiv.prepend($tweets);
   };
 
-  usernameClick = function() {
+  const userSubmittedTweet = function(username) {
+    let $tweet;
+    let latestTweet = streams.users[username].length - 1;
+    // set time property for new tweet
+    streams.users[username][latestTweet].created_at = new Date();
+    // construct tweet
+    $tweet = constructTweets(streams.users[username][latestTweet]);
+
+
+    // append new tweet to tweets div
+    $tweetsDiv.prepend($tweet);
+  };
+
+  const usernameClick = function() {
     $('.user').on('click', function() {
       let username = this.innerText.slice(1);
       userTweets(username);
@@ -139,7 +177,35 @@ $(document).ready(() => {
     });
   };
 
-  // add click handler to new tweet button
+  // add click handler to user submitted tweet button
+  const $submitButton = $('#submit-button');
+  $submitButton.on('click', function() {
+    // prevent form from refreshing page
+    $('#tweet-form').submit(function(e){
+      e.preventDefault();
+    })
+    // set window.visitor property
+    window.visitor = $('#user-text').val();
+    let username = window.visitor;
+    if (!window.visitor) { 
+      alert("Choose a username"); 
+    }
+    // if new username is not a stream.users property yet
+    if (!streams.users[username]) {
+      streams.users[username] = [];
+    }
+    // use writeTweet to create tweet
+    writeTweet($('#msg-text').val());
+    // add tweet to feed
+    userSubmittedTweet(username);
+
+    // carry click event handler to usernames
+    usernameClick();
+    // console.log(window.visitor, typeof window.visitor);
+    // console.log($('#msg-text').val(), typeof $('#msg-text').val())
+  })
+
+  // add click handler to new tweets button
   const $tweetButton = $('#new-tweets');
   $tweetButton.on('click', function() {
     newTweets();
