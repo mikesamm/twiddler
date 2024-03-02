@@ -1,12 +1,15 @@
 
 $(document).ready(() => {
+  // HTML structure ///////////////////////////////////////////////////////////
   const $body = $('body');
   $body.html('');
 
-  // add button inside a button div
-  const $buttonDiv = $('<div id=new-tweets-button>');
-  $body.prepend($buttonDiv);
-  $buttonDiv.append('<button id=new-tweets>show latest tweets</button>');
+  const $leftSide = $('<div id=left></div>');
+  const $rightSide = $('<div id=right></div>');
+  $body.append($leftSide);
+  $body.append($rightSide);
+
+  $leftSide.append($('<h1>Twiddler</h1>'));
 
   // add a form to accept a username and tweet
   // declare form div and form elements
@@ -21,7 +24,7 @@ $(document).ready(() => {
   const $formMsgLabel = $('<label for=msg-text>tweet:</label>');
   const $formMsgText = $('<input type=text id="msg-text">');
   //  add a form div to house the form fields
-  $body.prepend($formDiv);
+  $leftSide.append($formDiv);
   $formDiv.append($form);
   //    two text fields in the form
   $form.append($formUserDiv);
@@ -34,38 +37,45 @@ $(document).ready(() => {
   $form.append($formButtonDiv);
   $formButtonDiv.append($button);
 
+  // add button inside a button div
+  const $buttonDiv = $('<div id=new-tweets-button>');
+  $rightSide.append($buttonDiv);
+  $buttonDiv.append('<button id=new-tweets>show latest tweets</button>');
 
   // create a div for all of the tweets
   const $tweetsDiv = $('<div id=tweets>');
-  $body.append($tweetsDiv);
+  $rightSide.append($tweetsDiv);
 
   // create time variables
   let previousTime; // would equal time listed in the timeStamp div
 
+  // Tweet construction ///////////////////////////////////////////////////////
+
   constructTweets = function(tweet) {
     // create a div and other elements for each tweet
     const $tweet = $('<div class=tweet></div>');
-    const $userContainer = $('<span class=user></span>');
-    const $message = $('<span class=message></span>');
+    const $tweetBody = $('<div class=tweet-body></div>');
+    const $userContainer = $('<div class=user></div>');
+    const $message = $('<div class=message></div>');
 
     // create div after each tweet div for times
     const $times = $('<div class=times style=border: 2px solid blue>');
-    const $timeStamp = $('<span class=timestamp></span>');
-    const $timeago = $('<span class=timeago></span>');
+    const $timeStamp = $('<div class=timestamp></div>');
+    const $timeago = $('<div class=timeago></div>');
 
     // text to go into tweet elements
-    const username = `@${tweet.user}`;
-    const message = `: ${tweet.message}`;
+    const username = `@${tweet.user}:`;
+    const message = `${tweet.message}`;
 
     // text (time) to go into time div
-    const time = moment(); // TODO: might need to change to created_at parse
+    const time = moment(); 
     const timeTweeted = moment().calendar(time); // ex: Today at 2:30 AM
     const timeago = moment().from(); // ex: a few seconds ago
     
     // add user and message to tweet div
-    $tweet.append($userContainer);
-    // $userContainer.append($user);
-    $tweet.append($message);
+    $tweet.append($tweetBody);
+    $tweetBody.append($userContainer);
+    $tweetBody.append($message);
     // add text to tweet elements
     $userContainer.text(username);
     $message.text(message);
@@ -131,24 +141,6 @@ $(document).ready(() => {
       return constructTweets(tweet);
     });
 
-    // TODO: implement stream update like main stream? can re-use this logic below
-    // check time to determine which tweets are prepended to the body
-    // if previous time is undefined
-    // if (!previousTime) {
-    //   //   map the whole streams.home
-    //   $tweets = streams.users[username].map((tweet) => {
-    //     return constructTweets(tweet);
-    //   });
-    // } else {
-    //   //   filter out those with created_at later than previous time
-    //   let latestTweets = streams.users[username].filter((tweet) => tweet.created_at > previousTime);
-    //   //   map filtered array
-    //   $tweets = latestTweets.map((tweet) => {
-    //     return constructTweets(tweet);
-    //   });
-
-    // }
-
     // append new tweets to tweets div
     $tweetsDiv.prepend($tweets);
   };
@@ -166,12 +158,14 @@ $(document).ready(() => {
     $tweetsDiv.prepend($tweet);
   };
 
+  // Click handling / functionality ///////////////////////////////////////////
+
   const usernameClick = function() {
     $('.user').on('click', function() {
-      let username = this.innerText.slice(1);
+      let username = this.innerText.slice(1, this.innerText.length - 1);
+      console.log(username);
       userTweets(username);
       // carry styling over
-      $('.times').css('border', '2px solid blue');
       // carry usernameClick functionality
       usernameClick();
     });
@@ -210,7 +204,7 @@ $(document).ready(() => {
   $tweetButton.on('click', function() {
     newTweets();
     // carry styling over
-    $('.times').css('border', '2px solid blue');
+    // $('.times').css('border', '2px solid blue');
     // carry click event handler to usernames
     usernameClick();
   });
@@ -218,13 +212,7 @@ $(document).ready(() => {
   // add click event handler to usernames
   usernameClick();
 
-  // how to show streams.users.(username) array when clicked?
-  //  change body to show only (username)'s tweets
-  //    when username clicked, it should trigger a function that changes the body of the html
-
-  // add a box to certain divs
-  $('#tweets').css('border', '2px solid red');
-  $('#new-tweets-button').css('border', '2px solid red');
-  $('.times').css('border', '2px solid blue');
-
+  ///////////////////////////////////////////////////////////////////////
+  // helper functions ///////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////
 });
