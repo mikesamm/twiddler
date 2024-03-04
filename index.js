@@ -14,11 +14,11 @@ $(document).ready(() => {
   // add a form to accept a username and tweet
   // declare form div and form elements
   const $formDiv = $('<div id="tweet-form-container">');
-  const $form = $('<form id=tweet-form>')
-  const $button = $('<button id=submit-button>tweet</button>')
-  const $formUserDiv = $('<div id=submit-user-div>')
-  const $formMsgDiv = $('<div id=submit-msg-div>')
-  const $formButtonDiv = $('<div id=submit-button-div>')
+  const $form = $('<form id=tweet-form>');
+  const $button = $('<button id=submit-button>tweet</button>');
+  const $formUserDiv = $('<div id=submit-user-div>');
+  const $formMsgDiv = $('<div id=submit-msg-div>');
+  const $formButtonDiv = $('<div id=submit-button-div>');
   const $formUserLabel = $('<label for=user-text>username:</label>');
   const $formUserText = $('<input type=text id=user-text>');
   const $formMsgLabel = $('<label for=msg-text>tweet:</label>');
@@ -126,13 +126,7 @@ $(document).ready(() => {
   newTweets();
 
   const userTweets = function(username) {
-    // change the whole body of the html to the user's stream
 
-    // include a button to "go back" at the top of the section
-    //  change the new tweets button to "go back"?
-
-    // clear the body tag
-    // $body.html('');
     // declare tweets variable
     let $tweets;
 
@@ -165,7 +159,6 @@ $(document).ready(() => {
       let username = this.innerText.slice(1, this.innerText.length - 1);
       console.log(username);
       userTweets(username);
-      // carry styling over
       // carry usernameClick functionality
       usernameClick();
     });
@@ -175,14 +168,14 @@ $(document).ready(() => {
   const $submitButton = $('#submit-button');
   $submitButton.on('click', function() {
     // prevent form from refreshing page
-    $('#tweet-form').submit(function(e){
+    $('#tweet-form').submit(function(e) {
       e.preventDefault();
-    })
+    });
     // set window.visitor property
     window.visitor = $('#user-text').val();
     let username = window.visitor;
-    if (!window.visitor) { 
-      alert("Choose a username"); 
+    if (!window.visitor) {
+      alert('Choose a username');
     }
     // if new username is not a stream.users property yet
     if (!streams.users[username]) {
@@ -195,9 +188,7 @@ $(document).ready(() => {
 
     // carry click event handler to usernames
     usernameClick();
-    // console.log(window.visitor, typeof window.visitor);
-    // console.log($('#msg-text').val(), typeof $('#msg-text').val())
-  })
+  });
 
   // add click handler to new tweets button
   const $tweetButton = $('#new-tweets');
@@ -212,7 +203,4 @@ $(document).ready(() => {
   // add click event handler to usernames
   usernameClick();
 
-  ///////////////////////////////////////////////////////////////////////
-  // helper functions ///////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////
 });
