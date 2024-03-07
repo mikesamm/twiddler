@@ -99,31 +99,15 @@ $(document).ready(() => {
   };
 
   // deliver new tweets
-  const newTweets = function() {
+  const newTweets = function() { // constructTweets()
     // clear tweetsDiv
     $tweetsDiv.html('');
     // declare tweets variable
     let $tweets = [];
 
-    // check time to determine which tweets are prepended to the body
-    // if previous time is undefined
-    // if (!previousTime) {
-    // //   map the whole streams.home
-    // $tweets = streams.home.map((tweet) => {
-    //   return constructTweets(tweet);
-    // });
     for (let i = streams.home.length - 1; i >= 0; i--) {
       $tweets.push(constructTweets(streams.home[i]));
     }
-    // } else {
-    //   //   filter out those with created_at later than previous time
-    //   let latestTweets = streams.home.filter((tweet) => tweet.created_at > previousTime);
-    //   //   map filtered array
-    //   $tweets = latestTweets.map((tweet) => {
-    //     return constructTweets(tweet);
-    //   });
-
-    // }
 
     // prepend new tweets to tweets div
     $tweetsDiv.prepend($tweets);
@@ -131,28 +115,27 @@ $(document).ready(() => {
   };
   newTweets();
 
-  const userTweets = function(username) {
+  const userTweets = function(username) { // constructTweets()
     // filter entire tweetsDiv to show only clicked on username
     // declare tweets variable
-    let $tweets;
+    let $tweets = [];
 
-    //   map the whole streams.users[username]
-    $tweets = streams.users[username].map((tweet) => {
-      return constructTweets(tweet);
-    });
+    for (let i = streams.users[username].length - 1; i >= 0; i--) {
+      $tweets.push(constructTweets(streams.users[username][i]));
+    }
 
     // prepend tweets to tweets div
     $tweetsDiv.prepend($tweets);
   };
 
-  const userSubmittedTweet = function(username) {
+  const userSubmittedTweet = function(username) { // constructTweets()
     let $tweet;
     let latestTweet = streams.users[username].length - 1;
     // set time property for new tweet
     streams.users[username][latestTweet].created_at = new Date();
     // construct tweet
     $tweet = constructTweets(streams.users[username][latestTweet]);
-    console.log('array of submitted tweets', streams.users[username]);
+    // console.log('array of submitted tweets', streams.users[username]);
 
     // append new tweet to tweets div
     $tweetsDiv.prepend($tweet);
@@ -160,7 +143,7 @@ $(document).ready(() => {
 
   // Click handling / functionality ///////////////////////////////////////////
 
-  const usernameClick = function() {
+  const usernameClick = function() { // userTweets()
     $('.user').on('click', function() {
       let username = this.innerText.slice(1, this.innerText.length - 1);
       console.log(username);
@@ -171,7 +154,7 @@ $(document).ready(() => {
   };
 
   // add click handler to user submitted tweet button
-  const $submitButton = $('#submit-button');
+  const $submitButton = $('#submit-button'); // userSubmittedTweet(), usernameClick(), writeTweet()
   $submitButton.on('click', function() {
     // prevent form from refreshing page
     $('#tweet-form').submit(function(e) {
@@ -194,17 +177,23 @@ $(document).ready(() => {
     // add tweet to feed
     userSubmittedTweet(username);
 
+    // clear textfields
+    $(':input', '#tweet-form')
+      .not(':button, :submit, :reset, :hidden')
+      .val('');
+
+
     // carry click event handler to usernames
     usernameClick();
   });
 
   // add click handler to new tweets button
   const $tweetButton = $('#new-tweets');
-  $tweetButton.on('click', function() {
+  $tweetButton.on('click', function() { // newTweets()
     newTweets();
 
     // carry click event handler to usernames
-    // usernameClick();
+    usernameClick();
   });
 
   // add click event handler to usernames
