@@ -116,7 +116,8 @@ $(document).ready(() => {
   newTweets();
 
   const userTweets = function(username) { // constructTweets()
-    // filter entire tweetsDiv to show only clicked on username
+    // clear tweetsDiv
+    $tweetsDiv.html('');
     // declare tweets variable
     let $tweets = [];
 
