@@ -42,6 +42,10 @@ h1 {
   margin-left: 1rem;
 }
 
+input {
+  border-radius: .4rem;
+}
+
 .user:hover {
   cursor: pointer;
 }
