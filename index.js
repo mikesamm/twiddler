@@ -51,7 +51,7 @@ $(document).ready(() => {
 
   // Tweet construction ///////////////////////////////////////////////////////
 
-  constructTweets = function(tweet) {
+  const constructTweets = function(tweet) {
     // create a div and other elements for each tweet
     const $tweet = $('<div class=tweet></div>');
     const $tweetBody = $('<div class=tweet-body></div>');
@@ -68,7 +68,7 @@ $(document).ready(() => {
     const message = `${tweet.message}`;
 
     // text (time) to go into time div
-    const time = moment(); 
+    const time = moment();
     const timeTweeted = moment().calendar(time); // ex: Today at 2:30 AM
     const timeago = moment().from(); // ex: a few seconds ago
     
@@ -100,33 +100,39 @@ $(document).ready(() => {
 
   // deliver new tweets
   const newTweets = function() {
+    // clear tweetsDiv
+    $tweetsDiv.html('');
     // declare tweets variable
-    let $tweets;
+    let $tweets = [];
 
     // check time to determine which tweets are prepended to the body
     // if previous time is undefined
-    if (!previousTime) {
-      //   map the whole streams.home
-      $tweets = streams.home.map((tweet) => {
-        return constructTweets(tweet);
-      });
-    } else {
-      //   filter out those with created_at later than previous time
-      let latestTweets = streams.home.filter((tweet) => tweet.created_at > previousTime);
-      //   map filtered array
-      $tweets = latestTweets.map((tweet) => {
-        return constructTweets(tweet);
-      });
-
+    // if (!previousTime) {
+    // //   map the whole streams.home
+    // $tweets = streams.home.map((tweet) => {
+    //   return constructTweets(tweet);
+    // });
+    for (let i = streams.home.length - 1; i >= 0; i--) {
+      $tweets.push(constructTweets(streams.home[i]));
     }
+    // } else {
+    //   //   filter out those with created_at later than previous time
+    //   let latestTweets = streams.home.filter((tweet) => tweet.created_at > previousTime);
+    //   //   map filtered array
+    //   $tweets = latestTweets.map((tweet) => {
+    //     return constructTweets(tweet);
+    //   });
 
-    // append new tweets to tweets div
+    // }
+
+    // prepend new tweets to tweets div
     $tweetsDiv.prepend($tweets);
+    // $tweetsDiv.prepend($testTweets);
   };
   newTweets();
 
   const userTweets = function(username) {
-
+    // filter entire tweetsDiv to show only clicked on username
     // declare tweets variable
     let $tweets;
 
@@ -135,7 +141,7 @@ $(document).ready(() => {
       return constructTweets(tweet);
     });
 
-    // append new tweets to tweets div
+    // prepend tweets to tweets div
     $tweetsDiv.prepend($tweets);
   };
 
@@ -146,7 +152,7 @@ $(document).ready(() => {
     streams.users[username][latestTweet].created_at = new Date();
     // construct tweet
     $tweet = constructTweets(streams.users[username][latestTweet]);
-
+    console.log('array of submitted tweets', streams.users[username]);
 
     // append new tweet to tweets div
     $tweetsDiv.prepend($tweet);
@@ -160,7 +166,7 @@ $(document).ready(() => {
       console.log(username);
       userTweets(username);
       // carry usernameClick functionality
-      usernameClick();
+      // usernameClick();
     });
   };
 
@@ -183,6 +189,8 @@ $(document).ready(() => {
     }
     // use writeTweet to create tweet
     writeTweet($('#msg-text').val());
+    // see how users object is looking
+    
     // add tweet to feed
     userSubmittedTweet(username);
 
@@ -194,10 +202,9 @@ $(document).ready(() => {
   const $tweetButton = $('#new-tweets');
   $tweetButton.on('click', function() {
     newTweets();
-    // carry styling over
-    // $('.times').css('border', '2px solid blue');
+
     // carry click event handler to usernames
-    usernameClick();
+    // usernameClick();
   });
 
   // add click event handler to usernames
